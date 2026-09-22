@@ -1,3 +1,0 @@
-all_tests.adb:9:21: warning: use of an anonymous access type allocator [-gnatw_a]
-all_tests.adb:10:21: warning: use of an anonymous access type allocator [-gnatw_a]
-all_tests.adb:11:21: warning: use of an anonymous access type allocator [-gnatw_a]

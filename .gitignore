@@ -1,0 +1,31 @@
+# Alire build artifacts
+/obj/
+/lib/
+/bin/
+/config/
+/alire/flags/
+
+# Local Alire state (per-machine)
+/alire/alire.lock
+/alire/alr_test_local.log
+/alire/alr_test_local.xml
+/alire/build_hash_inputs
+/alire/settings.toml
+
+# Ada compiler output
+*.ali
+*.o
+*.bexch
+
+# macOS
+.DS_Store
+._*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Scratch
+fix.sh
+*.bak

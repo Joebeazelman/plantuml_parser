@@ -1,6 +1,0 @@
-dependency:aunit=23.0.0=c7d2d3946a9f4db393078f76bdd765207c7ecb1cb4501e646254fd6d2ff8f3f3
-external:LIBRARY_TYPE=default
-external:PLANTUML_PARSER_LIBRARY_TYPE=default
-profile:plantuml_parser=RELEASE
-switches:plantuml_parser=-O3,-fdata-sections,-ffunction-sections,-gnat2022,-gnatW8,-gnatn
-version:gnat_native=16.1.0
