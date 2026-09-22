@@ -1,0 +1,25 @@
+[LIBRARY PATH]
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/lib/libplantuml_parser.a
+[OBJECT FILES]
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/plantuml-classes.o
+20260922032151
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/plantuml-states.o
+20260922032151
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/plantuml-to_model.o
+20260922032151
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/plantuml-tokens.o
+20260922032148
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/plantuml.o
+20260922032147
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/uml-model-queries.o
+20260922032146
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/uml-model.o
+20260922032152
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/uml.o
+20260922032146
+[GENERATED SOURCE FILES]
+b__plantuml_parser.ads
+b__plantuml_parser.adb
+b__plantuml_parser.ali
+[GENERATED OBJECT FILES]
+b__plantuml_parser.o

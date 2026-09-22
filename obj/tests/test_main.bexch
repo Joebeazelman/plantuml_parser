@@ -1,0 +1,29 @@
+[GENERATED OBJECT FILE]
+b__test_main.o
+[PROJECT FILES]
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/plantuml_parser_tests.gpr
+20260920124328 97a969c7b9e9412fed95abc948192745
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/plantuml_parser.gpr
+20260921152108 247ee9e301cf5f919b03e12a80ebbbc4
+/Users/manuelbarros/.local/share/alire/builds/aunit_23.0.0_84ce7d0b/c7d2d3946a9f4db393078f76bdd765207c7ecb1cb4501e646254fd6d2ff8f3f3/lib/gnat/aunit_shared.gpr
+20260920124309 0fbd58604558550150fc06ddcc9af5a6
+/Users/manuelbarros/.local/share/alire/builds/aunit_23.0.0_84ce7d0b/c7d2d3946a9f4db393078f76bdd765207c7ecb1cb4501e646254fd6d2ff8f3f3/lib/gnat/aunit.gpr
+20260920124309 06dea12472f63739dc8482105bc8af35
+[BOUND OBJECT FILES]
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/tests/test_classes.o
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/tests/test_states.o
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/tests/test_tokens.o
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/tests/all_tests.o
+/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/tests/test_main.o
+[GENERATED SOURCE FILES]
+b__test_main.ads
+b__test_main.adb
+b__test_main.ali
+[RESULTING OPTIONS]
+-L/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/tests/
+-L/Users/manuelbarros/Projects/ai-generated/plantuml_parser/obj/tests/
+-L/Users/manuelbarros/.local/share/alire/builds/aunit_23.0.0_84ce7d0b/c7d2d3946a9f4db393078f76bdd765207c7ecb1cb4501e646254fd6d2ff8f3f3/lib/aunit/native-full/
+-L/Users/manuelbarros/Projects/ai-generated/plantuml_parser/lib/
+-L/users/manuelbarros/.local/share/alire/toolchains/gnat_native_16.1.0_657cf254/lib/gcc/aarch64-apple-darwin24.6.0/16.1.0/adalib/
+-static
+/users/manuelbarros/.local/share/alire/toolchains/gnat_native_16.1.0_657cf254/lib/gcc/aarch64-apple-darwin24.6.0/16.1.0/adalib/libgnat.a

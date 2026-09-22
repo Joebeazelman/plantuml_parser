@@ -1,0 +1,7 @@
+****** Checked Error raised during test:
+raised ALIRE.CHECKED_ERROR : alire-stored-error:1
+Load address: 0x100768000
+Call stack traceback locations:
+0x101463a70 0x101463ad0 0x101192c58 0x100df7228 0x100df8c30 0x10088d308 0x100888c34 0x100889690 0x10088b03c 0x10088f22c 0x10088f3d0 0x10086dd38 0x100878768 0x10076a33c 0x10076f3b4
+
+****** TRACE END

@@ -1,0 +1,129 @@
+V "GNAT Lib v16"
+M P W=b
+A -gnatA
+A -gnat2022
+A -gnatX
+A -gnata
+A -gnatwa
+A -gnatVa
+A -mmacosx-version-min=28.0.0
+A -mcpu=apple-m1
+A -mlittle-endian
+A -mabi=lp64
+A -fPIC
+P SS ZX
+
+RN
+RV NO_DISPATCH
+RV NO_DEFAULT_INITIALIZATION
+RV NO_IMPLEMENTATION_PRAGMAS
+
+U test_main%b		test_main.adb		c0fd487f NE OO SU
+W ada%s			ada.ads			ada.ali
+W ada.command_line%s	a-comlin.adb		a-comlin.ali
+Z ada.strings.text_buffers%s  a-sttebu.adb	a-sttebu.ali
+W all_tests%s		all_tests.adb		all_tests.ali
+W aunit%s		aunit.adb		aunit.ali
+W aunit.reporter%s	aunit-reporter.adb	aunit-reporter.ali
+W aunit.reporter.text%s	aunit-reporter-text.adb	aunit-reporter-text.ali
+W aunit.run%s		aunit-run.adb		aunit-run.ali
+
+D ada.ads		20260610194523 76789da1 ada%s
+D a-calend.ads		20260610194523 bf7f3cc9 ada.calendar%s
+D a-comlin.ads		20260610194523 4aa66568 ada.command_line%s
+D a-except.ads		20260610194523 8699d7ff ada.exceptions%s
+D a-finali.ads		20260610194523 099c16e4 ada.finalization%s
+D a-inteio.ads		20260610194523 f64b89a4 ada.integer_text_io%s
+D a-ioexce.ads		20260610194523 40018c65 ada.io_exceptions%s
+D a-stream.ads		20260610194523 cb01a8f8 ada.streams%s
+D a-string.ads		20260610194523 90ac6797 ada.strings%s
+D a-sttebu.ads		20260610194523 f1ad67a2 ada.strings.text_buffers%s
+D a-stuten.ads		20260610194523 c6ced0ae ada.strings.utf_encoding%s
+D a-tags.ads		20260610194523 2dbf449c ada.tags%s
+D a-textio.ads		20260610194523 34ef47de ada.text_io%s
+D a-tiinio.ads		20260610194523 76699c8f ada.text_io.integer_io%s
+D a-unccon.ads		20260610194523 0e9b276f ada.unchecked_conversion%s
+D ada_containers.ads	20260920124309 11329e00 ada_containers%s
+D ada_containers-aunit_lists.ads  20260920124309 d9ebc89a ada_containers.aunit_lists%s
+D all_tests.ads		20260920124344 301caa57 all_tests%s
+D aunit.ads		20260920124309 76cdf7c6 aunit%s
+D aunit-assertions.ads	20260920124309 b7f9ecd6 aunit.assertions%s
+D aunit-io.ads		20260920124309 fb5ed18b aunit.io%s
+D aunit-options.ads	20260920124309 6e5a02a6 aunit.options%s
+D aunit-reporter.ads	20260920124309 2c6ff74a aunit.reporter%s
+D aunit-reporter-text.ads  20260920124309 3a193bce aunit.reporter.text%s
+D aunit-run.ads		20260920124309 34d20999 aunit.run%s
+D aunit-run.adb		20260920124309 c843a398 aunit.run%b
+D aunit-simple_test_cases.ads  20260920124309 4111c32f aunit.simple_test_cases%s
+D aunit-test_filters.ads  20260920124309 f10b2127 aunit.test_filters%s
+D aunit-test_results.ads  20260920124309 b44de7dc aunit.test_results%s
+D aunit-test_suites.ads	20260920124309 6821dc24 aunit.test_suites%s
+D aunit-tests.ads	20260920124309 1da11d49 aunit.tests%s
+D aunit-time_measure.ads  20260920124309 d9c247b0 aunit.time_measure%s
+D gnat.ads		20260610194523 b5988c27 gnat%s
+D g-souinf.ads		20260610194523 470146ee gnat.source_info%s
+D interfac.ads		20260610194523 9111f9c1 interfaces%s
+D i-c.ads		20260610194523 dbdd3be7 interfaces.c%s
+D i-cstrea.ads		20260610194523 ffd01b9d interfaces.c_streams%s
+D system.ads		20260610194523 8a611ac3 system%s
+D s-crtl.ads		20260610194523 823b6536 system.crtl%s
+D s-exctab.ads		20260610194523 91bef6ef system.exception_table%s
+D s-ficobl.ads		20260610194523 dc5161d4 system.file_control_block%s
+D s-finpri.ads		20260610194523 5970d55a system.finalization_primitives%s
+D s-finroo.ads		20260610194523 0a7c3ed4 system.finalization_root%s
+D s-oscons.ads		20260626180535 42ad9981 system.os_constants%s
+D s-oslock.ads		20260610194523 bcc789d2 system.os_locks%s
+D s-parame.ads		20260610194523 a1aeab5c system.parameters%s
+D s-pooglo.ads		20260610194523 91708d21 system.pool_global%s
+D s-putima.ads		20260610194523 1b989439 system.put_images%s
+D s-retsta.ads		20260610194523 0f6b06cb system.return_stack%s
+D s-secsta.ads		20260610194523 578279f5 system.secondary_stack%s
+D s-soflin.ads		20260610194523 5d88fdea system.soft_links%s
+D s-stache.ads		20260610194523 0b81c1fe system.stack_checking%s
+D s-stalib.ads		20260610194523 1c9580f6 system.standard_library%s
+D s-stoele.ads		20260610194523 ccded4e8 system.storage_elements%s
+D s-stopoo.ads		20260610194523 45459446 system.storage_pools%s
+D s-stratt.ads		20260610194523 80b8dafb system.stream_attributes%s
+D s-traent.ads		20260610194523 c81cbf8c system.traceback_entries%s
+D s-unstyp.ads		20260610194523 fa2a7f59 system.unsigned_types%s
+D s-wchcon.ads		20260610194523 d9032363 system.wch_con%s
+D s-wchstw.ads		20260610194523 2d112c01 system.wch_stw%s
+D test_main.adb		20260920124422 c24142d1 test_main%b
+G a e
+G c Z b b [test_main standard 7 11 none]
+G r i none [test_main standard 7 11 none] [test_runner_with_status aunit__run 60 13 none]
+G r s text_reporter [test_main standard 7 11 none] [text_reporterIP aunit__reporter__text 62 9 none]
+G r s result [test_main standard 7 11 none] [resultIP aunit__test_results 140 9 none]
+G r c none [test_main standard 7 11 none] [clear aunit__test_results 133 14 none]
+G r c none [test_main standard 7 11 none] [all_tests standard 3 10 none]
+G r c none [test_main standard 7 11 none] [run aunit__run 37 14 none]
+X 1 ada.ads
+18K9*Ada 22e8 61|4r6 15r4 17r12 18r12
+X 3 a-comlin.ads
+40K13*Command_Line 148e21 61|4w10 15r8 17r16 18r16
+74I9*Exit_Status<integer>
+76i4*Success{74I9} 61|17r29
+77i4*Failure{74I9} 61|18r29
+79U14*Set_Exit_Status 61|15s21
+X 18 all_tests.ads
+3V10*All_Tests{30|44P9} 61|5w6 10r59
+X 19 aunit.ads
+34K9*AUnit 48e10 61|1r6 2r6 3w6 8r13 10r24 12r15 13r24 16r19
+40E9*Status 40e37 61|8r19 13r30
+40n20*Success{40E9} 61|16r25
+X 23 aunit-reporter.ads
+36K15*Reporter 58e19 61|1r12 12r21
+X 24 aunit-reporter-text.ads
+33K24*Text 66e24 61|1w21 12r30
+35R9*Text_Reporter<23|38R9> 64e14 61|12r35
+X 25 aunit-run.ads
+38K15*Run 65e14 61|2w12 10r30
+60v13*Test_Runner_With_Status 61|10r34
+X 30 aunit-test_suites.ads
+44P9*Access_Test_Suite(43R9)
+X 61 test_main.adb
+7U11*Test_Main 7b11 19l5 19t14
+10V13 Run[25|60]{19|40E9} 26|94b13 61|13s40
+12r4 Reporter{24|35R9} 13r45
+13e4 Status{19|40E9} 16r10
+
