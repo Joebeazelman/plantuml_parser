@@ -217,6 +217,14 @@ package body PlantUML.To_Model is
          end;
       end loop;
 
+      --  Propagate diagram-level notes (e.g. "note right ... end note")
+      for N of D.Notes loop
+         Result.Notes.Append
+           (UML.Model.Note'(Text     => N.Text,
+                            Subject  => 0,
+                            Position => UML.Model.Attached));
+      end loop;
+
       return Result;
    end From_State;
 

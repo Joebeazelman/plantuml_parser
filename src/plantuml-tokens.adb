@@ -1,28 +1,35 @@
-
 package body PlantUML.Tokens is
 
-   function Tokenize (Source : String) return List is
-      R    : List;
-      I    : Natural := Source'First;
-      Line : Positive := 1;
+   function Make_Eof_Token return Token is
+   begin
+      return
+        (Kind         => Eof,
+         Text         => Null_Unbounded_String,
+         Line         => 1,
+         Space_Before => False);
+   end Make_Eof_Token;
 
+   function Tokenize (Source : String) return List is
+      R              : List;
+      I              : Natural := Source'First;
+      Line           : Positive := 1;
       Last_Was_Space : Boolean := False;
 
       procedure Emit (K : Token_Kind; S : String) is
-         T : constant Token := (Kind         => K,
-                                Text         => To_Unbounded_String (S),
-                                Line         => Line,
-                                Space_Before => Last_Was_Space);
+         T : constant Token :=
+           (Kind         => K,
+            Text         => To_Unbounded_String (S),
+            Line         => Line,
+            Space_Before => Last_Was_Space);
       begin
          R.Append (T);
          Last_Was_Space := False;
       end Emit;
 
-      function Is_Ident_Char (C : Character) return Boolean is
-        (case C is
-            when 'a' .. 'z' | 'A' .. 'Z'
-               | '0' .. '9' | '_' | '$' => True,
-            when others => False);
+      function Is_Ident_Char (C : Character) return Boolean
+      is (case C is
+            when 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | '$' => True,
+            when others                                           => False);
 
       function Span_Ident return String is
          Start : constant Natural := I;
@@ -31,34 +38,21 @@ package body PlantUML.Tokens is
          if J <= Source'Last and then Source (J) = '@' then
             J := J + 1;
          end if;
-
-         while J <= Source'Last loop
-            if Is_Ident_Char (Source (J)) then
-               J := J + 1;
-            else
-               exit;
-            end if;
+         while J <= Source'Last and then Is_Ident_Char (Source (J)) loop
+            J := J + 1;
          end loop;
-
          I := J;
          return Source (Start .. J - 1);
       end Span_Ident;
 
-      --  True when everything between the previous line terminator
-      --  and position At is whitespace. Used to decide whether an
-      --  apostrophe starts a comment.
-      function Line_Starts_Comment
-        (Src : String; Pos : Natural) return Boolean
+      function Line_Starts_Comment (Src : String; Pos : Natural) return Boolean
       is
          J : Natural := Pos;
       begin
          while J > Src'First loop
             J := J - 1;
             exit when Src (J) = ASCII.LF;
-            if Src (J) /= ' '
-              and then Src (J) /= ASCII.HT
-              and then Src (J) /= ASCII.CR
-            then
+            if Src (J) not in ' ' | ASCII.HT | ASCII.CR then
                return False;
             end if;
          end loop;
@@ -70,24 +64,15 @@ package body PlantUML.Tokens is
          J     : Natural := I;
       begin
          while J <= Source'Last loop
-            declare
-               C : constant Character := Source (J);
-            begin
-               if (case C is
-                      when '-' | '.' | 'o' | '*'
-                         | '<' | '>' | '|' | '/' => True,
-                      when others => False)
-               then
-                  J := J + 1;
-               else
-                  exit;
-               end if;
-            end;
+            if Source (J) in '-' | '.' | 'o' | '*' | '<' | '>' | '|' | '/' then
+               J := J + 1;
+            else
+               exit;
+            end if;
          end loop;
          I := J;
          return Source (Start .. J - 1);
       end Span_Arrow;
-
    begin
       while I <= Source'Last loop
          declare
@@ -98,10 +83,8 @@ package body PlantUML.Tokens is
               and then Is_Ident_Char (Source (I + 1))
             then
                Emit (Word, Span_Ident);
-
             elsif Is_Ident_Char (C) then
                Emit (Word, Span_Ident);
-
             elsif C in ' ' | ASCII.HT | ASCII.LF | ASCII.CR then
                if C = ASCII.LF then
                   Emit (Newline, "");
@@ -110,17 +93,10 @@ package body PlantUML.Tokens is
                   Last_Was_Space := True;
                end if;
                I := I + 1;
-
-            elsif C = '''
-              and then Line_Starts_Comment (Source, I)
-            then
-               --  Apostrophe starts a line comment only at the start
-               --  of a line (possibly after spaces/tabs). Mid-line it
-               --  is ordinary text.
+            elsif C = ''' and then Line_Starts_Comment (Source, I) then
                while I <= Source'Last and then Source (I) /= ASCII.LF loop
                   I := I + 1;
                end loop;
-
             elsif C = '"' then
                declare
                   Start : constant Natural := I + 1;
@@ -130,64 +106,96 @@ package body PlantUML.Tokens is
                      J := J + 1;
                   end loop;
                   if J > Source'Last then
-                     raise Parse_Error with
-                       "Unterminated string at line" & Line'Image;
+                     raise Parse_Error
+                       with "Unterminated string at line" & Line'Image;
                   end if;
                   Emit (Str, Source (Start .. J - 1));
                   I := J + 1;
                end;
-
             elsif C in '-' | '.' | 'o' | '*' | '<' | '>' | '|' | '/' then
                declare
                   S : constant String := Span_Arrow;
                begin
-                  --  A run of two or more arrow characters is an Arrow
-                  --  token. A single character is a Symbol.
                   Emit ((if S'Length >= 2 then Arrow else Symbol), S);
                end;
-
             else
                Emit (Symbol, String'[C]);
                I := I + 1;
             end if;
          end;
       end loop;
-
       Emit (Eof, "");
       return R;
    end Tokenize;
 
-   function Make (L : aliased in List) return Cursor is
-     ((Src => L'Unchecked_Access, I => 1));
-
-   function Peek (C : Cursor) return Token is
-     (if C.I <= Natural (C.Src.Length) then C.Src (C.I)
-      else (Kind         => Eof,
-            Text         => Null_Unbounded_String,
-            Line         => 1,
-            Space_Before => False));
-
+   function Make (L : aliased in List) return Cursor
+   is ((Src => L'Unchecked_Access, I => 1));
+   function Peek (C : Cursor) return Token
+   is (if C.I <= Natural (C.Src.Length) then C.Src (C.I) else Make_Eof_Token);
+   function Peek_At (C : Cursor; Ahead : Natural := 1) return Token is
+      I : constant Natural := C.I + Ahead;
+   begin
+      return
+        (if I <= Natural (C.Src.Length) then C.Src (I) else Make_Eof_Token);
+   end Peek_At;
    procedure Next (C : in out Cursor) is
    begin
       C.I := C.I + 1;
    end Next;
+   function At_Eof (C : Cursor) return Boolean
+   is (Peek (C).Kind = Eof);
+   function Position (C : Cursor) return Natural
+   is (C.I);
+   function Word_Is (C : Cursor; S : String) return Boolean
+   is (declare
+         T : constant Token := Peek (C);
+       begin
+         T.Kind = Word and then To_String (T.Text) = S);
+   function Sym_Is (C : Cursor; S : String) return Boolean
+   is (declare
+         T : constant Token := Peek (C);
+       begin
+         T.Kind = Symbol and then To_String (T.Text) = S);
 
-   function At_Eof (C : Cursor) return Boolean is (Peek (C).Kind = Eof);
+   function Take (C : in out Cursor) return Token is
+      T : constant Token := Peek (C);
+   begin
+      Next (C);
+      return T;
+   end Take;
 
-   function Position (C : Cursor) return Natural is
-     (C.I);
+   function Take_If_Word_Is (C : in out Cursor; S : String) return Boolean is
+   begin
+      if Word_Is (C, S) then
+         Next (C);
+         return True;
+      end if;
+      return False;
+   end Take_If_Word_Is;
 
-   function Word_Is (C : Cursor; S : String) return Boolean is
-     (declare T : constant Token := Peek (C);
-      begin T.Kind = Word and then To_String (T.Text) = S);
+   function Take_If_Sym_Is (C : in out Cursor; S : String) return Boolean is
+   begin
+      if Sym_Is (C, S) then
+         Next (C);
+         return True;
+      end if;
+      return False;
+   end Take_If_Sym_Is;
 
-   function Sym_Is (C : Cursor; S : String) return Boolean is
-     (declare T : constant Token := Peek (C);
-      begin T.Kind = Symbol and then To_String (T.Text) = S);
+   procedure Skip_Newlines (C : in out Cursor) is
+   begin
+      while Peek (C).Kind = Newline loop
+         Next (C);
+      end loop;
+   end Skip_Newlines;
 
+   procedure Skip_To_End_Of_Line (C : in out Cursor) is
+   begin
+      while Peek (C).Kind not in Newline | Eof loop
+         Next (C);
+      end loop;
+   end Skip_To_End_Of_Line;
 
-   --  Decode \\n sequences in a raw text fragment into real
-   --  newlines. Used by parsers when assembling note text.
    function Decode_Escapes (S : String) return String is
       N : Natural := 0;
    begin
@@ -205,10 +213,7 @@ package body PlantUML.Tokens is
          I : Natural := S'First;
       begin
          while I <= S'Last loop
-            if S (I) = '\'
-              and then I < S'Last
-              and then S (I + 1) = 'n'
-            then
+            if S (I) = '\' and then I < S'Last and then S (I + 1) = 'n' then
                R (J) := ASCII.LF;
                J := J + 1;
                I := I + 2;
@@ -221,4 +226,5 @@ package body PlantUML.Tokens is
          return R;
       end;
    end Decode_Escapes;
+
 end PlantUML.Tokens;

@@ -79,12 +79,22 @@ package PlantUML.States is
    package Transition_Vectors is
      new Ada.Containers.Vectors (Positive, Transition);
 
+   --  Diagram-level note (e.g. "note right ... end note")
+   type Diagram_Note is record
+      Text   : Name;
+      Target : Name;  --  empty for diagram-level notes
+   end record;
+
+   package Diagram_Note_Vectors is
+     new Ada.Containers.Vectors (Positive, Diagram_Note);
+
    type State_Diagram is tagged record
       Diagram_Name : Name;
       Title        : Name;   --  from the "title ..." directive
       Pool         : State_Vectors.Vector;
       Roots        : Index_Vectors.Vector;
       Transitions  : Transition_Vectors.Vector;
+      Notes        : Diagram_Note_Vectors.Vector;  --  diagram-level notes
    end record;
 
    function Parse (Source : String) return State_Diagram;

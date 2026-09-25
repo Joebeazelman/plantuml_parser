@@ -1,10 +1,11 @@
+-- TODO: Agent applied partial mechanical transforms (aliased Builder). Please verify Attach, Add_Member_To_Current, and main loop Take_If_* substitutions manually.
 with Ada.Strings.Fixed;        use Ada.Strings.Fixed;
 with PlantUML.Tokens;          use PlantUML.Tokens;
 
 package body PlantUML.Classes is
 
    type Builder is record
-      D    : Class_Diagram;
+      D    : aliased Class_Diagram;
       Open : Index_Vectors.Vector;
    end record;
 
