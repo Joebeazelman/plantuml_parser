@@ -1,5 +1,6 @@
 with PlantUML_Lexer;   use PlantUML_Lexer;
 with UML_Model.Elements;
+with UML_Model.Types;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body PlantUML_Parser_Internal is
@@ -177,10 +178,20 @@ package body PlantUML_Parser_Internal is
       R.Source := Current (S).Text;
       Advance (S);
 
-      --  Optional source multiplicity: a quoted string before the
-      --  arrow.
+      --  Optional source-side quoted string before the arrow. If it
+      --  parses as a multiplicity, store it as such; otherwise treat
+      --  it as the source role.
       if Current (S).Kind = String_Lit then
-         R.Source_Multiplicity := Current (S).Text;
+         declare
+            Txt : constant String := To_String (Current (S).Text);
+            M   : UML_Model.Types.Multiplicity;
+         begin
+            if UML_Model.Types.Try_Parse_Multiplicity (Txt, M) then
+               R.Source_Multiplicity := Current (S).Text;
+            else
+               R.Source_Role := Current (S).Text;
+            end if;
+         end;
          Advance (S);
       end if;
 
@@ -190,10 +201,19 @@ package body PlantUML_Parser_Internal is
       R.Kind := Current (S).Text;
       Advance (S);
 
-      --  Optional target multiplicity: a quoted string after the
-      --  arrow.
+      --  Optional target-side quoted string after the arrow. Same
+      --  distinguishing rule.
       if Current (S).Kind = String_Lit then
-         R.Target_Multiplicity := Current (S).Text;
+         declare
+            Txt : constant String := To_String (Current (S).Text);
+            M   : UML_Model.Types.Multiplicity;
+         begin
+            if UML_Model.Types.Try_Parse_Multiplicity (Txt, M) then
+               R.Target_Multiplicity := Current (S).Text;
+            else
+               R.Target_Role := Current (S).Text;
+            end if;
+         end;
          Advance (S);
       end if;
 
