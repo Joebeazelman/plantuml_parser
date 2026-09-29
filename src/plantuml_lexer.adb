@@ -5,7 +5,6 @@ package body PlantUML_Lexer is
    function Lex (Source : String) return Token_Vector is
       Pos : Natural := 0;
       Loc : Source_Location := No_Location;
-
       Vec : Token_Vector;
 
       function At_End return Boolean is
@@ -50,8 +49,8 @@ package body PlantUML_Lexer is
 
       procedure Skip_Block_Comment is
       begin
-         Advance;  --  '/'
-         Advance;  --  '''
+         Advance;
+         Advance;
          while not At_End loop
             if Peek = ''' and then Peek_Next = '/' then
                Advance;
@@ -113,6 +112,25 @@ package body PlantUML_Lexer is
          return Make_Token (Number, To_String (Buf), Start_Loc);
       end Scan_Number;
 
+      function Scan_Stereotype return Token is
+         Start_Loc : constant Source_Location := Loc;
+         Buf       : Unbounded_String;
+      begin
+         Advance;  --  <
+         Advance;  --  <
+         while not At_End
+           and then not (Peek = '>' and then Peek_Next = '>')
+         loop
+            Append (Buf, Peek);
+            Advance;
+         end loop;
+         if not At_End then
+            Advance;  --  >
+            Advance;  --  >
+         end if;
+         return Make_Token (Stereotype, To_String (Buf), Start_Loc);
+      end Scan_Stereotype;
+
       function Is_Arrow_Char (Ch : Character) return Boolean is
         (Ch in '-' | '.' | '>' | '|' | 'o' | '*');
 
@@ -160,6 +178,8 @@ package body PlantUML_Lexer is
                   Vec.Append (Make_Token (Keyword_Of (S), S, Start_Loc));
                end;
             end;
+         elsif Peek = '<' and then Peek_Next = '<' then
+            Vec.Append (Scan_Stereotype);
          else
             declare
                Ch : constant Character := Peek;
@@ -173,10 +193,7 @@ package body PlantUML_Lexer is
                   when ']' => Emit_Punct (R_Bracket, "]");
                   when ':' => Emit_Punct (Colon, ":");
                   when ';' => Emit_Punct (Semicolon, ";");
-                  when '/' =>
-                     --  '/' after [ is action; otherwise it may begin
-                     --  a block comment which was handled above.
-                     Emit_Punct (Slash, "/");
+                  when '/' => Emit_Punct (Slash, "/");
                   when '-' | '.' | 'o' | '*' =>
                      declare
                         Save_Pos : constant Natural := Pos;

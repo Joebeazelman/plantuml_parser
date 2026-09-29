@@ -1,5 +1,6 @@
 with Ada.Containers.Vectors;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with UML_Model.Elements;    use UML_Model.Elements;
 with UML_Model.Source;      use UML_Model.Source;
 
 package PlantUML_AST is
@@ -7,11 +8,12 @@ package PlantUML_AST is
    type Member_Kind is (Attribute, Method);
 
    type Member is record
-      Kind     : Member_Kind;
-      Name     : Unbounded_String;
-      Of_Type  : Unbounded_String;
-      Vis      : Unbounded_String;
-      Location : Source_Location := No_Location;
+      Kind        : Member_Kind;
+      Name        : Unbounded_String;
+      Of_Type     : Unbounded_String;
+      Vis         : Unbounded_String;
+      Stereotypes : Stereotype_Vector;
+      Location    : Source_Location := No_Location;
    end record;
 
    package Member_Vectors is new Ada.Containers.Vectors
@@ -22,9 +24,10 @@ package PlantUML_AST is
    subtype Member_Vector is Member_Vectors.Vector;
 
    type Class_Decl is record
-      Name     : Unbounded_String;
-      Members  : Member_Vector;
-      Location : Source_Location := No_Location;
+      Name        : Unbounded_String;
+      Stereotypes : Stereotype_Vector;
+      Members     : Member_Vector;
+      Location    : Source_Location := No_Location;
    end record;
 
    package Class_Decl_Vectors is new Ada.Containers.Vectors
@@ -40,6 +43,7 @@ package PlantUML_AST is
       Target      : Unbounded_String;
       Source_Role : Unbounded_String;
       Target_Role : Unbounded_String;
+      Stereotypes : Stereotype_Vector;
       Location    : Source_Location := No_Location;
    end record;
 
@@ -56,6 +60,7 @@ package PlantUML_AST is
       Parent       : Unbounded_String;
       Entry_Action : Unbounded_String;
       Exit_Action  : Unbounded_String;
+      Stereotypes  : Stereotype_Vector;
       Location     : Source_Location := No_Location;
    end record;
 
@@ -67,12 +72,13 @@ package PlantUML_AST is
    subtype State_Decl_Vector is State_Decl_Vectors.Vector;
 
    type Transition_Decl is record
-      Source   : Unbounded_String;
-      Target   : Unbounded_String;
-      Event    : Unbounded_String;
-      Guard    : Unbounded_String;
-      Action   : Unbounded_String;
-      Location : Source_Location := No_Location;
+      Source      : Unbounded_String;
+      Target      : Unbounded_String;
+      Event       : Unbounded_String;
+      Guard       : Unbounded_String;
+      Action      : Unbounded_String;
+      Stereotypes : Stereotype_Vector;
+      Location    : Source_Location := No_Location;
    end record;
 
    package Transition_Decl_Vectors is new Ada.Containers.Vectors

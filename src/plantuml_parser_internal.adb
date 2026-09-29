@@ -1,4 +1,5 @@
 with PlantUML_Lexer;   use PlantUML_Lexer;
+with UML_Model.Elements;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body PlantUML_Parser_Internal is
@@ -30,6 +31,22 @@ package body PlantUML_Parser_Internal is
    function Text_Of (T : Token) return String is
      (To_String (T.Text));
 
+   --  Consume any run of Stereotype tokens at the current position
+   --  and return them as a Stereotype_Vector. Returns an empty
+   --  vector if no stereotypes are present.
+   function Collect_Stereotypes (S : in out Parser_State)
+     return UML_Model.Elements.Stereotype_Vector
+   is
+      Result : UML_Model.Elements.Stereotype_Vector;
+   begin
+      while Current (S).Kind = Stereotype loop
+         Result.Append
+           (UML_Model.Elements.Make_Stereotype (Text_Of (Current (S))));
+         Advance (S);
+      end loop;
+      return Result;
+   end Collect_Stereotypes;
+
    function Parse_Member (S : in out Parser_State) return Member is
       Result : Member;
    begin
@@ -48,6 +65,9 @@ package body PlantUML_Parser_Internal is
       end if;
       Result.Name := Current (S).Text;
       Advance (S);
+
+      --  Stereotypes may appear after the member name.
+      Result.Stereotypes := Collect_Stereotypes (S);
 
       if Current (S).Kind = L_Paren then
          Result.Kind := Method;
@@ -115,6 +135,9 @@ package body PlantUML_Parser_Internal is
       end if;
       C.Name := Current (S).Text;
       Advance (S);
+
+      C.Stereotypes := Collect_Stereotypes (S);
+
       if Current (S).Kind = L_Brace then
          Parse_Class_Body (S, C);
       end if;
@@ -141,6 +164,7 @@ package body PlantUML_Parser_Internal is
       end if;
       R.Target := Current (S).Text;
       Advance (S);
+      R.Stereotypes := Collect_Stereotypes (S);
       D.Relations.Append (R);
    end Parse_Relation;
 
@@ -189,6 +213,8 @@ package body PlantUML_Parser_Internal is
       Decl.Parent := Parent;
       Advance (S);
 
+      Decl.Stereotypes := Collect_Stereotypes (S);
+
       D.States.Append (Decl);
 
       if Current (S).Kind = L_Brace then
@@ -196,8 +222,6 @@ package body PlantUML_Parser_Internal is
       end if;
    end Parse_State_Decl;
 
-   --  Collect tokens into Buf until one of the stop tokens is
-   --  reached. Stop tokens are not consumed.
    procedure Collect_Until
      (S    : in out Parser_State;
       Buf  : out Unbounded_String;
@@ -218,6 +242,18 @@ package body PlantUML_Parser_Internal is
    procedure Parse_Transition (S : in out Parser_State;
                                D : in out Diagram) is
       T : Transition_Decl;
+
+      function Next_Kind return Token_Kind is
+      begin
+         if S.Pos + 1 > S.Tokens.Last_Index then
+            return End_Of_Input;
+         end if;
+         return S.Tokens.Element (S.Pos + 1).Kind;
+      end Next_Kind;
+
+      function At_New_Transition return Boolean is
+        (Current (S).Kind = Ident and then Next_Kind = Arrow);
+
    begin
       T.Location := Current (S).Location;
       if Current (S).Kind /= Ident then
@@ -235,13 +271,15 @@ package body PlantUML_Parser_Internal is
       T.Target := Current (S).Text;
       Advance (S);
 
+      T.Stereotypes := Collect_Stereotypes (S);
+
       if Current (S).Kind = Colon then
          Advance (S);
 
-         --  Event: everything up to '[' or '/' or terminator.
          T.Event := Null_Unbounded_String;
          while Current (S).Kind not in
            L_Bracket | Slash | Semicolon | R_Brace | End_Of_Input
+           and then not At_New_Transition
          loop
             if Length (T.Event) > 0 then
                Append (T.Event, ' ');
@@ -250,7 +288,6 @@ package body PlantUML_Parser_Internal is
             Advance (S);
          end loop;
 
-         --  Guard: bracketed expression.
          T.Guard := Null_Unbounded_String;
          if Current (S).Kind = L_Bracket then
             Advance (S);
@@ -260,11 +297,19 @@ package body PlantUML_Parser_Internal is
             end if;
          end if;
 
-         --  Action: text after '/'.
          T.Action := Null_Unbounded_String;
          if Current (S).Kind = Slash then
             Advance (S);
-            Collect_Until (S, T.Action, End_Of_Input);
+            while Current (S).Kind not in
+              Semicolon | R_Brace | End_Of_Input
+              and then not At_New_Transition
+            loop
+               if Length (T.Action) > 0 then
+                  Append (T.Action, ' ');
+               end if;
+               Append (T.Action, Text_Of (Current (S)));
+               Advance (S);
+            end loop;
          end if;
       end if;
 

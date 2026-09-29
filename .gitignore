@@ -12,3 +12,4 @@ bin/
 # Test executables
 tests/obj/
 tests/lib/
+*.log

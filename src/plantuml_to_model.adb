@@ -54,28 +54,31 @@ package body PlantUML_To_Model is
    function To_Property (M : PlantUML_AST.Member) return Property is
       P : Property;
    begin
-      P.Name       := Make_Identifier (To_String (M.Name));
-      P.Of_Type    := Make_Type_Reference (To_String (M.Of_Type));
-      P.Visibility := To_Visibility (To_String (M.Vis));
-      P.Location   := M.Location;
+      P.Name         := Make_Identifier (To_String (M.Name));
+      P.Of_Type      := Make_Type_Reference (To_String (M.Of_Type));
+      P.Visibility   := To_Visibility (To_String (M.Vis));
+      P.Stereotypes  := M.Stereotypes;
+      P.Location     := M.Location;
       return P;
    end To_Property;
 
    function To_Operation (M : PlantUML_AST.Member) return Operation is
       O : Operation;
    begin
-      O.Name        := Make_Identifier (To_String (M.Name));
-      O.Return_Type := Make_Type_Reference (To_String (M.Of_Type));
-      O.Visibility  := To_Visibility (To_String (M.Vis));
-      O.Location    := M.Location;
+      O.Name         := Make_Identifier (To_String (M.Name));
+      O.Return_Type  := Make_Type_Reference (To_String (M.Of_Type));
+      O.Visibility   := To_Visibility (To_String (M.Vis));
+      O.Stereotypes  := M.Stereotypes;
+      O.Location     := M.Location;
       return O;
    end To_Operation;
 
    function To_Class_Model (C : PlantUML_AST.Class_Decl) return Class_Model is
       Result : Class_Model;
    begin
-      Result.Name     := Make_Identifier (To_String (C.Name));
-      Result.Location := C.Location;
+      Result.Name        := Make_Identifier (To_String (C.Name));
+      Result.Stereotypes := C.Stereotypes;
+      Result.Location    := C.Location;
       for M of C.Members loop
          case M.Kind is
             when PlantUML_AST.Attribute =>
@@ -90,12 +93,13 @@ package body PlantUML_To_Model is
    function To_Relation (R : PlantUML_AST.Relation_Decl) return Relation is
       Result : Relation;
    begin
-      Result.Kind        := To_Relation_Kind (To_String (R.Kind));
-      Result.Source      := Make_Identifier (To_String (R.Source));
-      Result.Target      := Make_Identifier (To_String (R.Target));
-      Result.Source_Role := R.Source_Role;
-      Result.Target_Role := R.Target_Role;
-      Result.Location    := R.Location;
+      Result.Kind         := To_Relation_Kind (To_String (R.Kind));
+      Result.Source       := Make_Identifier (To_String (R.Source));
+      Result.Target       := Make_Identifier (To_String (R.Target));
+      Result.Source_Role  := R.Source_Role;
+      Result.Target_Role  := R.Target_Role;
+      Result.Stereotypes  := R.Stereotypes;
+      Result.Location     := R.Location;
       return Result;
    end To_Relation;
 
@@ -109,6 +113,7 @@ package body PlantUML_To_Model is
                                             S.Location);
       Result.Exit_Action  := Make_Fragment (To_String (S.Exit_Action),
                                             S.Location);
+      Result.Stereotypes  := S.Stereotypes;
       Result.Location     := S.Location;
       return Result;
    end To_State;
@@ -116,12 +121,13 @@ package body PlantUML_To_Model is
    function To_Transition (T : PlantUML_AST.Transition_Decl) return Transition is
       Result : Transition;
    begin
-      Result.Source   := Make_Identifier (To_String (T.Source));
-      Result.Target   := Make_Identifier (To_String (T.Target));
-      Result.Event    := Make_Fragment (To_String (T.Event),  T.Location);
-      Result.Guard    := Make_Fragment (To_String (T.Guard),  T.Location);
-      Result.Action   := Make_Fragment (To_String (T.Action), T.Location);
-      Result.Location := T.Location;
+      Result.Source      := Make_Identifier (To_String (T.Source));
+      Result.Target      := Make_Identifier (To_String (T.Target));
+      Result.Event       := Make_Fragment (To_String (T.Event),  T.Location);
+      Result.Guard       := Make_Fragment (To_String (T.Guard),  T.Location);
+      Result.Action      := Make_Fragment (To_String (T.Action), T.Location);
+      Result.Stereotypes := T.Stereotypes;
+      Result.Location    := T.Location;
       return Result;
    end To_Transition;
 
