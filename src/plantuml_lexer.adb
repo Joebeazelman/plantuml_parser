@@ -3,9 +3,7 @@ with Ada.Characters.Handling; use Ada.Characters.Handling;
 package body PlantUML_Lexer is
 
    function Lex (Source : String) return Token_Vector is
-      --  Nested state: the lexer is a one-shot scan of Source, so
-      --  everything lives in the enclosing subprogram's scope.
-      Pos : Natural := 0;              --  offset into Source
+      Pos : Natural := 0;
       Loc : Source_Location := No_Location;
 
       Vec : Token_Vector;
@@ -138,7 +136,6 @@ package body PlantUML_Lexer is
    begin
       while not At_End loop
          Skip_Whitespace;
-
          exit when At_End;
 
          if Peek = ''' then
@@ -150,7 +147,7 @@ package body PlantUML_Lexer is
                Start_Loc : constant Source_Location := Loc;
                Buf       : Unbounded_String;
             begin
-               Advance;  --  '@'
+               Advance;
                while not At_End
                  and then (Is_Alphanumeric (Peek) or else Peek = '_')
                loop
@@ -168,18 +165,18 @@ package body PlantUML_Lexer is
                Ch : constant Character := Peek;
             begin
                case Ch is
-                  when '{' =>
-                     Emit_Punct (L_Brace, "{");
-                  when '}' =>
-                     Emit_Punct (R_Brace, "}");
-                  when '(' =>
-                     Emit_Punct (L_Paren, "(");
-                  when ')' =>
-                     Emit_Punct (R_Paren, ")");
-                  when ':' =>
-                     Emit_Punct (Colon, ":");
-                  when ';' =>
-                     Emit_Punct (Semicolon, ";");
+                  when '{' => Emit_Punct (L_Brace, "{");
+                  when '}' => Emit_Punct (R_Brace, "}");
+                  when '(' => Emit_Punct (L_Paren, "(");
+                  when ')' => Emit_Punct (R_Paren, ")");
+                  when '[' => Emit_Punct (L_Bracket, "[");
+                  when ']' => Emit_Punct (R_Bracket, "]");
+                  when ':' => Emit_Punct (Colon, ":");
+                  when ';' => Emit_Punct (Semicolon, ";");
+                  when '/' =>
+                     --  '/' after [ is action; otherwise it may begin
+                     --  a block comment which was handled above.
+                     Emit_Punct (Slash, "/");
                   when '-' | '.' | 'o' | '*' =>
                      declare
                         Save_Pos : constant Natural := Pos;
@@ -187,8 +184,6 @@ package body PlantUML_Lexer is
                         T : constant Token := Scan_Arrow;
                         S : constant String := To_String (T.Text);
                      begin
-                        --  Valid arrow: at least two chars, ends in
-                        --  '>' or '-' or '.'.
                         if S'Length >= 2
                           and then S (S'Last) in '>' | '-' | '.'
                         then

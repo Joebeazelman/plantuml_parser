@@ -118,9 +118,9 @@ package body PlantUML_To_Model is
    begin
       Result.Source   := Make_Identifier (To_String (T.Source));
       Result.Target   := Make_Identifier (To_String (T.Target));
-      Result.Trigger  := Make_Fragment (To_String (T.Trigger), T.Location);
-      Result.Guard    := Make_Fragment (To_String (T.Guard),   T.Location);
-      Result.Action   := Make_Fragment (To_String (T.Action),  T.Location);
+      Result.Event    := Make_Fragment (To_String (T.Event),  T.Location);
+      Result.Guard    := Make_Fragment (To_String (T.Guard),  T.Location);
+      Result.Action   := Make_Fragment (To_String (T.Action), T.Location);
       Result.Location := T.Location;
       return Result;
    end To_Transition;

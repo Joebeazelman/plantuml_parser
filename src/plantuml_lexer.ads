@@ -9,7 +9,9 @@ package PlantUML_Lexer is
       Kw_Start, Kw_End, Kw_Choice, Kw_Fork, Kw_Join, Kw_History,
       Kw_Startuml, Kw_Enduml,
       Ident, Number,
-      L_Brace, R_Brace, L_Paren, R_Paren, Colon, Semicolon, Arrow,
+      L_Brace, R_Brace, L_Paren, R_Paren,
+      L_Bracket, R_Bracket, Slash,
+      Colon, Semicolon, Arrow,
       End_Of_Input, Unknown);
 
    type Token is record

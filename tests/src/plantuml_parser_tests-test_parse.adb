@@ -7,6 +7,7 @@ with UML_Model.Class;          use UML_Model.Class;
 with UML_Model.Elements;       use UML_Model.Elements;
 with UML_Model.Models;         use UML_Model.Models;
 with UML_Model.Source;         use UML_Model.Source;
+with UML_Model.State_Machine;  use UML_Model.State_Machine;
 
 package body PlantUML_Parser_Tests.Test_Parse is
 
@@ -17,6 +18,7 @@ package body PlantUML_Parser_Tests.Test_Parse is
 
    procedure Test_Class_With_Attribute (T : in out Test_Case'Class);
    procedure Test_Empty_Input (T : in out Test_Case'Class);
+   procedure Test_Structured_Transition (T : in out Test_Case'Class);
 
    overriding function Name (T : Test) return AUnit.Message_String is
      (AUnit.Format ("PlantUML_Parser.Parse"));
@@ -28,6 +30,8 @@ package body PlantUML_Parser_Tests.Test_Parse is
                         "class with attribute parses");
       Register_Routine (T, Test_Empty_Input'Access,
                         "empty input is an error");
+      Register_Routine (T, Test_Structured_Transition'Access,
+                        "transition trigger splits into event/guard/action");
    end Register_Tests;
 
    procedure Test_Class_With_Attribute (T : in out Test_Case'Class) is
@@ -66,6 +70,48 @@ package body PlantUML_Parser_Tests.Test_Parse is
    begin
       Assert (not Result.Success, "empty input should fail");
    end Test_Empty_Input;
+
+   procedure Test_Structured_Transition (T : in out Test_Case'Class) is
+      pragma Unreferenced (T);
+      Input : constant String :=
+        "state Idle" & ASCII.LF &
+        "state Running" & ASCII.LF &
+        "Idle --> Running : start [count > 0] / reset";
+      Result : constant Parse_Results.Result := Parse (Input);
+   begin
+      Assert (Result.Success, "parse should succeed");
+      if not Result.Success then
+         return;
+      end if;
+
+      Assert (Natural (Result.Output.State_Machines.Length) = 1,
+              "one state machine");
+      if Result.Output.State_Machines.Is_Empty then
+         return;
+      end if;
+
+      declare
+         Chart : constant State_Chart_Model :=
+           Result.Output.State_Machines.Element (1);
+      begin
+         Assert (Natural (Chart.Transitions.Length) = 1,
+                 "one transition");
+         if Chart.Transitions.Is_Empty then
+            return;
+         end if;
+
+         declare
+            Tr : constant Transition := Chart.Transitions.Element (1);
+         begin
+            Assert (To_String (Tr.Event)  = "start",
+                    "event = start, got '" & To_String (Tr.Event) & "'");
+            Assert (To_String (Tr.Guard)  = "count > 0",
+                    "guard = 'count > 0', got '" & To_String (Tr.Guard) & "'");
+            Assert (To_String (Tr.Action) = "reset",
+                    "action = reset, got '" & To_String (Tr.Action) & "'");
+         end;
+      end;
+   end Test_Structured_Transition;
 
    The_Test : aliased Test;
 

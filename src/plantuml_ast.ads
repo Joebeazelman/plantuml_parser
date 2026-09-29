@@ -69,7 +69,7 @@ package PlantUML_AST is
    type Transition_Decl is record
       Source   : Unbounded_String;
       Target   : Unbounded_String;
-      Trigger  : Unbounded_String;
+      Event    : Unbounded_String;
       Guard    : Unbounded_String;
       Action   : Unbounded_String;
       Location : Source_Location := No_Location;

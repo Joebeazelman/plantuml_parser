@@ -35,8 +35,6 @@ package body PlantUML_Parser_Internal is
    begin
       Result.Location := Current (S).Location;
 
-      --  Optional visibility prefix (+ - # ~) arrives as Unknown
-      --  with a single-character body.
       if Current (S).Kind = Unknown
         and then Text_Of (Current (S))'Length = 1
         and then Text_Of (Current (S)) (1) in '+' | '-' | '#' | '~'
@@ -111,7 +109,7 @@ package body PlantUML_Parser_Internal is
       C : Class_Decl;
    begin
       C.Location := Current (S).Location;
-      Advance (S);  --  'class'
+      Advance (S);
       if Current (S).Kind /= Ident then
          return;
       end if;
@@ -154,7 +152,7 @@ package body PlantUML_Parser_Internal is
                                D : in out Diagram;
                                Parent : Unbounded_String) is
    begin
-      Advance (S);  --  '{'
+      Advance (S);
       while Current (S).Kind /= R_Brace
         and then Current (S).Kind /= End_Of_Input
       loop
@@ -175,7 +173,7 @@ package body PlantUML_Parser_Internal is
       Decl : State_Decl;
    begin
       Decl.Location := Current (S).Location;
-      Advance (S);  --  'state'
+      Advance (S);
 
       if Current (S).Kind in
         Kw_Start | Kw_End | Kw_Choice | Kw_Fork | Kw_Join | Kw_History
@@ -198,10 +196,28 @@ package body PlantUML_Parser_Internal is
       end if;
    end Parse_State_Decl;
 
+   --  Collect tokens into Buf until one of the stop tokens is
+   --  reached. Stop tokens are not consumed.
+   procedure Collect_Until
+     (S    : in out Parser_State;
+      Buf  : out Unbounded_String;
+      Stop : Token_Kind) is
+   begin
+      Buf := Null_Unbounded_String;
+      while Current (S).Kind not in
+        Stop | Semicolon | R_Brace | End_Of_Input
+      loop
+         if Length (Buf) > 0 then
+            Append (Buf, ' ');
+         end if;
+         Append (Buf, Text_Of (Current (S)));
+         Advance (S);
+      end loop;
+   end Collect_Until;
+
    procedure Parse_Transition (S : in out Parser_State;
                                D : in out Diagram) is
-      T   : Transition_Decl;
-      Buf : Unbounded_String;
+      T : Transition_Decl;
    begin
       T.Location := Current (S).Location;
       if Current (S).Kind /= Ident then
@@ -218,22 +234,44 @@ package body PlantUML_Parser_Internal is
       end if;
       T.Target := Current (S).Text;
       Advance (S);
+
       if Current (S).Kind = Colon then
          Advance (S);
+
+         --  Event: everything up to '[' or '/' or terminator.
+         T.Event := Null_Unbounded_String;
          while Current (S).Kind not in
-           Semicolon | R_Brace | End_Of_Input
+           L_Bracket | Slash | Semicolon | R_Brace | End_Of_Input
          loop
-            if Length (Buf) > 0 then
-               Append (Buf, ' ');
+            if Length (T.Event) > 0 then
+               Append (T.Event, ' ');
             end if;
-            Append (Buf, Text_Of (Current (S)));
+            Append (T.Event, Text_Of (Current (S)));
             Advance (S);
          end loop;
-         T.Trigger := Buf;
+
+         --  Guard: bracketed expression.
+         T.Guard := Null_Unbounded_String;
+         if Current (S).Kind = L_Bracket then
+            Advance (S);
+            Collect_Until (S, T.Guard, R_Bracket);
+            if Current (S).Kind = R_Bracket then
+               Advance (S);
+            end if;
+         end if;
+
+         --  Action: text after '/'.
+         T.Action := Null_Unbounded_String;
+         if Current (S).Kind = Slash then
+            Advance (S);
+            Collect_Until (S, T.Action, End_Of_Input);
+         end if;
       end if;
+
       if Current (S).Kind = Semicolon then
          Advance (S);
       end if;
+
       D.Transitions.Append (T);
    end Parse_Transition;
 
