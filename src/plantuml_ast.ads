@@ -52,13 +52,15 @@ package PlantUML_AST is
    subtype Class_Decl_Vector is Class_Decl_Vectors.Vector;
 
    type Relation_Decl is record
-      Kind        : Unbounded_String;
-      Source      : Unbounded_String;
-      Target      : Unbounded_String;
-      Source_Role : Unbounded_String;
-      Target_Role : Unbounded_String;
-      Stereotypes : Stereotype_Vector;
-      Location    : Source_Location := No_Location;
+      Kind                : Unbounded_String;
+      Source              : Unbounded_String;
+      Target              : Unbounded_String;
+      Source_Role         : Unbounded_String;
+      Target_Role         : Unbounded_String;
+      Source_Multiplicity : Unbounded_String;
+      Target_Multiplicity : Unbounded_String;
+      Stereotypes         : Stereotype_Vector;
+      Location            : Source_Location := No_Location;
    end record;
 
    package Relation_Decl_Vectors is new Ada.Containers.Vectors

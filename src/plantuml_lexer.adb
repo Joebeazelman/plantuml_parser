@@ -131,6 +131,21 @@ package body PlantUML_Lexer is
          return Make_Token (Stereotype, To_String (Buf), Start_Loc);
       end Scan_Stereotype;
 
+      function Scan_String return Token is
+         Start_Loc : constant Source_Location := Loc;
+         Buf       : Unbounded_String;
+      begin
+         Advance;  --  opening quote
+         while not At_End and then Peek /= '"' loop
+            Append (Buf, Peek);
+            Advance;
+         end loop;
+         if not At_End then
+            Advance;  --  closing quote
+         end if;
+         return Make_Token (String_Lit, To_String (Buf), Start_Loc);
+      end Scan_String;
+
       function Is_Arrow_Char (Ch : Character) return Boolean is
         (Ch in '-' | '.' | '>' | '|' | 'o' | '*');
 
@@ -180,6 +195,8 @@ package body PlantUML_Lexer is
             end;
          elsif Peek = '<' and then Peek_Next = '<' then
             Vec.Append (Scan_Stereotype);
+         elsif Peek = '"' then
+            Vec.Append (Scan_String);
          else
             declare
                Ch : constant Character := Peek;

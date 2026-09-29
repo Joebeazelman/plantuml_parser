@@ -8,7 +8,7 @@ package PlantUML_Lexer is
      (Kw_Class, Kw_State, Kw_Attr, Kw_Method,
       Kw_Start, Kw_End, Kw_Choice, Kw_Fork, Kw_Join, Kw_History,
       Kw_Startuml, Kw_Enduml,
-      Ident, Number, Stereotype,
+      Ident, Number, Stereotype, String_Lit,
       L_Brace, R_Brace, L_Paren, R_Paren,
       L_Bracket, R_Bracket, Slash, Comma,
       Colon, Semicolon, Arrow,

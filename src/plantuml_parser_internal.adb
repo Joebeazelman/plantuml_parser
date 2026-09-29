@@ -176,11 +176,27 @@ package body PlantUML_Parser_Internal is
       end if;
       R.Source := Current (S).Text;
       Advance (S);
+
+      --  Optional source multiplicity: a quoted string before the
+      --  arrow.
+      if Current (S).Kind = String_Lit then
+         R.Source_Multiplicity := Current (S).Text;
+         Advance (S);
+      end if;
+
       if Current (S).Kind /= Arrow then
          return;
       end if;
       R.Kind := Current (S).Text;
       Advance (S);
+
+      --  Optional target multiplicity: a quoted string after the
+      --  arrow.
+      if Current (S).Kind = String_Lit then
+         R.Target_Multiplicity := Current (S).Text;
+         Advance (S);
+      end if;
+
       if Current (S).Kind /= Ident then
          return;
       end if;

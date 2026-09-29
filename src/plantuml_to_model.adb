@@ -103,13 +103,17 @@ package body PlantUML_To_Model is
    function To_Relation (R : PlantUML_AST.Relation_Decl) return Relation is
       Result : Relation;
    begin
-      Result.Kind         := To_Relation_Kind (To_String (R.Kind));
-      Result.Source       := Make_Identifier (To_String (R.Source));
-      Result.Target       := Make_Identifier (To_String (R.Target));
-      Result.Source_Role  := R.Source_Role;
-      Result.Target_Role  := R.Target_Role;
-      Result.Stereotypes  := R.Stereotypes;
-      Result.Location     := R.Location;
+      Result.Kind        := To_Relation_Kind (To_String (R.Kind));
+      Result.Source      := Make_Identifier (To_String (R.Source));
+      Result.Target      := Make_Identifier (To_String (R.Target));
+      Result.Source_Role := R.Source_Role;
+      Result.Target_Role := R.Target_Role;
+      Result.Source_Multiplicity :=
+        Parse_Multiplicity (To_String (R.Source_Multiplicity));
+      Result.Target_Multiplicity :=
+        Parse_Multiplicity (To_String (R.Target_Multiplicity));
+      Result.Stereotypes := R.Stereotypes;
+      Result.Location    := R.Location;
       return Result;
    end To_Relation;
 
