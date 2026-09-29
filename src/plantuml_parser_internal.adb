@@ -154,7 +154,7 @@ package body PlantUML_Parser_Internal is
       C.Location := Current (S).Location;
       Advance (S);
       if Current (S).Kind /= Ident then
-         return;
+         raise Parse_Failed;
       end if;
       C.Name := Current (S).Text;
       Advance (S);
@@ -173,7 +173,7 @@ package body PlantUML_Parser_Internal is
    begin
       R.Location := Current (S).Location;
       if Current (S).Kind /= Ident then
-         return;
+         raise Parse_Failed;
       end if;
       R.Source := Current (S).Text;
       Advance (S);
@@ -196,7 +196,7 @@ package body PlantUML_Parser_Internal is
       end if;
 
       if Current (S).Kind /= Arrow then
-         return;
+         raise Parse_Failed;
       end if;
       R.Kind := Current (S).Text;
       Advance (S);
@@ -218,7 +218,7 @@ package body PlantUML_Parser_Internal is
       end if;
 
       if Current (S).Kind /= Ident then
-         return;
+         raise Parse_Failed;
       end if;
       R.Target := Current (S).Text;
       Advance (S);
@@ -265,7 +265,7 @@ package body PlantUML_Parser_Internal is
       end if;
 
       if Current (S).Kind /= Ident then
-         return;
+         raise Parse_Failed;
       end if;
       Decl.Name := Current (S).Text;
       Decl.Parent := Parent;
@@ -315,16 +315,16 @@ package body PlantUML_Parser_Internal is
    begin
       T.Location := Current (S).Location;
       if Current (S).Kind /= Ident then
-         return;
+         raise Parse_Failed;
       end if;
       T.Source := Current (S).Text;
       Advance (S);
       if Current (S).Kind /= Arrow then
-         return;
+         raise Parse_Failed;
       end if;
       Advance (S);
       if Current (S).Kind /= Ident then
-         return;
+         raise Parse_Failed;
       end if;
       T.Target := Current (S).Text;
       Advance (S);
@@ -411,24 +411,31 @@ package body PlantUML_Parser_Internal is
       D.Location := Current (S).Location;
 
       loop
-         case Current (S).Kind is
-            when Kw_Class =>
-               Parse_Class_Decl (S, D);
-            when Kw_State =>
-               Parse_State_Decl (S, D, Null_Unbounded_String);
-            when Ident =>
-               if D.Kind = Class_Diagram then
-                  Parse_Relation (S, D);
-               else
-                  Parse_Transition (S, D);
-               end if;
-            when Kw_Enduml =>
-               Advance (S);
-            when End_Of_Input =>
-               exit;
-            when others =>
-               Advance (S);
-         end case;
+         begin
+            case Current (S).Kind is
+               when Kw_Class =>
+                  Parse_Class_Decl (S, D);
+               when Kw_State =>
+                  Parse_State_Decl (S, D, Null_Unbounded_String);
+               when Ident =>
+                  if D.Kind = Class_Diagram then
+                     Parse_Relation (S, D);
+                  else
+                     Parse_Transition (S, D);
+                  end if;
+               when Kw_Enduml =>
+                  Advance (S);
+               when End_Of_Input =>
+                  exit;
+               when others =>
+                  Advance (S);
+            end case;
+         exception
+            when Parse_Failed =>
+               return AST_Results.Err
+                 (Make_Error (Current (S).Location,
+                              "malformed construct at this position"));
+         end;
       end loop;
 
       return AST_Results.Ok (D);
