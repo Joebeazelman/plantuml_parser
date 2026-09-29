@@ -10,7 +10,7 @@ package PlantUML_Lexer is
       Kw_Startuml, Kw_Enduml,
       Ident, Number, Stereotype,
       L_Brace, R_Brace, L_Paren, R_Paren,
-      L_Bracket, R_Bracket, Slash,
+      L_Bracket, R_Bracket, Slash, Comma,
       Colon, Semicolon, Arrow,
       End_Of_Input, Unknown);
 

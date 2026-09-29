@@ -7,11 +7,25 @@ package PlantUML_AST is
 
    type Member_Kind is (Attribute, Method);
 
+   type Parameter is record
+      Name     : Unbounded_String;
+      Of_Type  : Unbounded_String;
+      Location : Source_Location := No_Location;
+   end record;
+
+   package Parameter_Vectors is new Ada.Containers.Vectors
+     (Index_Type   => Positive,
+      Element_Type => Parameter);
+   use Parameter_Vectors;
+
+   subtype Parameter_Vector is Parameter_Vectors.Vector;
+
    type Member is record
       Kind        : Member_Kind;
       Name        : Unbounded_String;
       Of_Type     : Unbounded_String;
       Vis         : Unbounded_String;
+      Parameters  : Parameter_Vector;
       Stereotypes : Stereotype_Vector;
       Location    : Source_Location := No_Location;
    end record;

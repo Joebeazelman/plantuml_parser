@@ -71,11 +71,33 @@ package body PlantUML_Parser_Internal is
 
       if Current (S).Kind = L_Paren then
          Result.Kind := Method;
-         while Current (S).Kind /= R_Paren
-           and then Current (S).Kind /= End_Of_Input
+         Advance (S);  --  consume '('
          loop
-            Advance (S);
+            exit when Current (S).Kind in R_Paren | End_Of_Input;
+
+            declare
+               P : Parameter;
+            begin
+               P.Location := Current (S).Location;
+               if Current (S).Kind = Ident then
+                  P.Name := Current (S).Text;
+                  Advance (S);
+               end if;
+               if Current (S).Kind = Colon then
+                  Advance (S);
+                  if Current (S).Kind = Ident then
+                     P.Of_Type := Current (S).Text;
+                     Advance (S);
+                  end if;
+               end if;
+               Result.Parameters.Append (P);
+            end;
+
+            if Current (S).Kind in Comma | Semicolon then
+               Advance (S);
+            end if;
          end loop;
+
          if Current (S).Kind = R_Paren then
             Advance (S);
          end if;

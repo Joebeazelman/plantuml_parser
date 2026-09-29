@@ -70,6 +70,16 @@ package body PlantUML_To_Model is
       O.Visibility   := To_Visibility (To_String (M.Vis));
       O.Stereotypes  := M.Stereotypes;
       O.Location     := M.Location;
+      for P of M.Parameters loop
+         declare
+            Param : Property;
+         begin
+            Param.Name    := Make_Identifier (To_String (P.Name));
+            Param.Of_Type := Make_Type_Reference (To_String (P.Of_Type));
+            Param.Location := P.Location;
+            O.Parameters.Append (Param);
+         end;
+      end loop;
       return O;
    end To_Operation;
 

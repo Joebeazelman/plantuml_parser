@@ -193,6 +193,7 @@ package body PlantUML_Lexer is
                   when ']' => Emit_Punct (R_Bracket, "]");
                   when ':' => Emit_Punct (Colon, ":");
                   when ';' => Emit_Punct (Semicolon, ";");
+                  when ',' => Emit_Punct (Comma, ",");
                   when '/' => Emit_Punct (Slash, "/");
                   when '-' | '.' | 'o' | '*' =>
                      declare
