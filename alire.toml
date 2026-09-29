@@ -13,3 +13,11 @@ uml_model = "*"
 
 [[pins]]
 uml_model = { path='../uml_model' }
+
+
+[[depends-on]]
+aunit = "*"
+
+[[actions]]
+type = "test"
+command = ["sh", "-c", "alr exec -- gprbuild -P tests/plantuml_parser_tests.gpr -p && ./tests/obj/tests"]

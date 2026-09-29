@@ -7,8 +7,9 @@ package PlantUML_Lexer is
    type Token_Kind is
      (Kw_Class, Kw_State, Kw_Attr, Kw_Method,
       Kw_Start, Kw_End, Kw_Choice, Kw_Fork, Kw_Join, Kw_History,
+      Kw_Startuml, Kw_Enduml,
       Ident, Number,
-      L_Brace, R_Brace, Colon, Semicolon, Arrow,
+      L_Brace, R_Brace, L_Paren, R_Paren, Colon, Semicolon, Arrow,
       End_Of_Input, Unknown);
 
    type Token is record
