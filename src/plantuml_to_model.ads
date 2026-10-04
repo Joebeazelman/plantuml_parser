@@ -1,10 +1,12 @@
-with PlantUML_AST;      use PlantUML_AST;
-with UML_Model.Models;  use UML_Model.Models;
-with UML_Model.Source;  use UML_Model.Source;
+with PlantUML_AST;     use PlantUML_AST;
+with UML_Model.Models; use UML_Model.Models;
+with UML_Model.Source; use UML_Model.Source;
 
 package PlantUML_To_Model is
+   pragma Elaborate_Body;
 
-   package Model_Results is new Results (Output_Type => Model);
+   package Model_Results is new
+     UML_Model.Source.Results (Output_Type => Model);
 
    function To_Model (D : Diagram) return Model_Results.Result;
 

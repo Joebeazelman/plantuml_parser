@@ -6,4 +6,8 @@ project PlantUML_Parser is
    for Library_Name use "plantuml_parser";
    for Library_Dir use "lib";
    for Library_Kind use "static";
+
+   package Compiler is
+      for Default_Switches ("Ada") use ("-gnat2022", "-gnatX", "-gnatwa");
+   end Compiler;
 end PlantUML_Parser;

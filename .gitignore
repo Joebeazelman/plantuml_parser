@@ -13,3 +13,4 @@ bin/
 tests/obj/
 tests/lib/
 *.log
+.DS_Store
